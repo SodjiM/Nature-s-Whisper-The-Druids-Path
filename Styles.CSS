@@ -1,0 +1,97 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+#game-container {
+    width: 800px;
+    margin: 0 auto;
+    position: relative; /* Ensures that absolute positioning is relative to the game container */
+}
+
+#header {
+    background-color: #4CAF50; /* Green background for the header */
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+
+#top-right-info {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: right;
+    background-color: transparent; /* Keep the background transparent */
+}
+
+#day-counter, #weather-display, #moon-phase {
+    display: inline; /* Changed from block to inline */
+    margin-left: 10px; /* Add space between the items */
+}
+
+#navigation-menu ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#navigation-menu li {
+    margin-bottom: 5px;
+}
+
+#navigation-menu button {
+    text-decoration: none;
+    color: #333;
+    background-color: #e7e7e7;
+    padding: 10px 15px;
+    border: none;
+    margin: 5px;
+}
+
+#navigation-menu button:hover {
+    background-color: #ddd;
+}
+
+#navigation-menu, #sleep-button {
+    display: none;
+}
+
+#game-display {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 10px;
+}
+
+#name-form {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#name-form input, #name-form button {
+    margin: 5px;
+}
+
+#druid-turn {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Styles for day and night themes */
+.day-theme {
+    background-color: #e0f2f1;
+    color: #004d40;
+}
+
+.day-theme #moon-phase {
+    display: none; /* Hide during Day Druid's turn */
+}
+
+.night-theme {
+    background-color: #263238;
+    color: #eceff1;
+}
+
+.night-theme #moon-phase {
+    display: inline; /* Show inline during Night Druid's turn */
+}

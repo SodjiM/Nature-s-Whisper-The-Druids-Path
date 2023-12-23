@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Druid's Game</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="header">
+            <div id="game-title">
+                <h1>Welcome to Nature's Whisper: The Druids' Path</h1>
+            </div>
+            <!-- The top-right info container -->
+            <div id="top-right-info">
+                <span id="day-counter">Spring, Day 1</span>
+                <span id="weather-display">Clear</span>
+                <span id="moon-phase">Moon Phase: Waxing Gibbous</span>
+            </div>
+        </div>
+        <div id="name-form">
+            <input type="text" id="day-druid-name" placeholder="Day Druid Name">
+            <input type="text" id="night-druid-name" placeholder="Night Druid Name">
+            <button onclick="startGame()">Start Game</button>
+        </div>
+        <div id="main-content">
+            <div id="druid-turn">
+                <!-- Druid turn information will go here -->
+            </div>
+            <div id="action-points">
+                <!-- Action points will be displayed here -->
+            </div>
+            <div id="navigation-menu">
+                <button onclick="exploreWildlands()">Explore Wildlands</button>
+                <button onclick="visitVillageCenter()">Village Center</button>
+                <button onclick="manageResources()">Manage Resources</button>
+                <!-- Updated button for rituals -->
+                <button onclick="updateRitualsList()">Perform Rituals</button>
+                <button onclick="planFestivals()">Plan Festivals</button>
+                <button onclick="villagerInteractions()">Villager Interactions</button>
+            </div>
+            <div id="sleep-button">
+                <button onclick="endTurn()">Sleep</button>
+            </div>
+            <div id="game-display">
+                <!-- Game content will be displayed here -->
+            </div>
+            <div id="active-effects-display">
+                <!-- Active effects will be displayed here -->
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
