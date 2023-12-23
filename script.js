@@ -1,4 +1,3 @@
-import dialogues from './dialogues.js';
 let dayDruidName = '';
 let nightDruidName = '';
 let isDayTurn = true;
