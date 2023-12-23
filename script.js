@@ -1,3 +1,4 @@
+import { dialogues } from './dialogues.js';
 let dayDruidName = '';
 let nightDruidName = '';
 let isDayTurn = true;
@@ -409,14 +410,6 @@ function talkToVillager(villagerName) {
     } else {
         alert("Not enough action points!");
     }
-}
-
-function getRelationshipStatus(points) {
-    if (points >= 30) return "Romantic";
-    else if (points >= 20) return "Best Friend";
-    else if (points >= 11) return "Friend";
-    else if (points >= 1) return "Acquaintance";
-    else return "Stranger";
 }
 
 function updateSeasonAndDay() {

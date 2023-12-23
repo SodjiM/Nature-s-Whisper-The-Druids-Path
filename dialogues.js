@@ -1,6 +1,4 @@
-// dialogues.js
-
-const dialogues = {
+export const dialogues = {
     "Aelwyn": {
         "Stranger": [
             "Hello, I don't believe we've met. I'm Aelwyn.",
@@ -14,5 +12,3 @@ const dialogues = {
     },
     // other villagers...
 };
-
-export default dialogues;
