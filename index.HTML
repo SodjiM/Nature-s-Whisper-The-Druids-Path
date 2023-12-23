@@ -20,7 +20,7 @@
         <div id="name-form">
             <input type="text" id="day-druid-name" placeholder="Day Druid Name">
             <input type="text" id="night-druid-name" placeholder="Night Druid Name">
-            <button onclick="startGame()">Start Game</button>
+            <button onclick="myFuncs.startGame()">Start Game</button>
         </div>
         <div id="main-content">
             <div id="druid-turn">
@@ -30,16 +30,16 @@
                 <!-- Action points will be displayed here -->
             </div>
             <div id="navigation-menu">
-                <button onclick="exploreWildlands()">Explore Wildlands</button>
-                <button onclick="visitVillageCenter()">Village Center</button>
-                <button onclick="manageResources()">Manage Resources</button>
+                <button onclick="myFuncs.exploreWildlands()">Explore Wildlands</button>
+                <button onclick="myFuncs.visitVillageCenter()">Village Center</button>
+                <button onclick="myFuncs.manageResources()">Manage Resources</button>
                 <!-- Updated button for rituals -->
-                <button onclick="updateRitualsList()">Perform Rituals</button>
-                <button onclick="planFestivals()">Plan Festivals</button>
-                <button onclick="villagerInteractions()">Villager Interactions</button>
+                <button onclick="myFuncs.updateRitualsList()">Perform Rituals</button>
+                <button onclick="myFuncs.planFestivals()">Plan Festivals</button>
+                <button onclick="myFuncs.villagerInteractions()">Villager Interactions</button>
             </div>
             <div id="sleep-button">
-                <button onclick="endTurn()">Sleep</button>
+                <button onclick="myFuncs.endTurn()">Sleep</button>
             </div>
             <div id="game-display">
                 <!-- Game content will be displayed here -->
@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-    <script type="modules" src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
 

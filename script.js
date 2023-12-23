@@ -1,4 +1,5 @@
 import { dialogues } from './dialogues.js';
+
 let dayDruidName = '';
 let nightDruidName = '';
 let isDayTurn = true;
@@ -461,3 +462,16 @@ function updateDisplayHeaders() {
     document.getElementById('weather-display').textContent = weatherText;
     document.getElementById('moon-phase').textContent = moonText;
 }
+
+const myFuncs = {
+    startGame: startGame,
+    exploreWildlands: exploreWildlands,
+    visitVillageCenter: visitVillageCenter,
+    manageResources: manageResources,
+    updateRitualsList: updateRitualsList,
+    planFestivals: planFestivals,
+    villagerInteractions: villagerInteractions,
+    endTurn: endTurn,
+  }
+  
+  window.myFuncs = myFuncs;
