@@ -95,3 +95,8 @@ body {
 .night-theme #moon-phase {
     display: inline; /* Show inline during Night Druid's turn */
 }
+
+.mood-display {
+    margin-left: 10px;
+    font-style: italic;
+}

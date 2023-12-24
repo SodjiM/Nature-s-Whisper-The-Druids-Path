@@ -10,6 +10,7 @@ let season = 'Spring';
 let dayDruidInventory = [];
 let nightDruidInventory = [];
 let villagerRelationships = {};
+const moods = ["Happy", "Sad", "Anxious", "Excited", "Thoughtful"];
 let villagers = generateVillagerList();
 let availableVillagers = [];
 let villageCenterStatus = 100;
@@ -64,7 +65,7 @@ let rituals = {
     }
 };
 
-                                                
+
 function startGame() {
     dayDruidName = document.getElementById('day-druid-name').value;
     nightDruidName = document.getElementById('night-druid-name').value;
@@ -77,13 +78,13 @@ function startGame() {
     dayCount = 1;  // Set the initial day
     isDayTurn = true;  // Set who starts the game
 
-     // Update initial weather
-     updateWeather();
+    // Update initial weather
+    updateWeather();
 
     // Call updateDisplayHeaders to set the initial display of day, season, year, etc.
     updateDisplayHeaders();
-    updateTurnDisplay();   
- }
+    updateTurnDisplay();
+}
 
 function updateTurnDisplay() {
     const druidTurn = document.getElementById('druid-turn');
@@ -169,7 +170,7 @@ function updateRitualsList() {
     let gameDisplayDiv = document.getElementById('game-display');
 
     // Clear existing content in game display
-    gameDisplayDiv.innerHTML = ''; 
+    gameDisplayDiv.innerHTML = '';
 
     Object.keys(rituals).forEach(ritualName => {
         let ritual = rituals[ritualName];
@@ -188,8 +189,8 @@ function updateRitualsList() {
 function canPerformRitual(ritual) {
     let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
     return currentInventory.includes(ritual.item) &&
-           currentWeather === ritual.weather &&
-           (!ritual.moonPhase || moonPhases[currentMoonPhaseIndex] === ritual.moonPhase);
+        currentWeather === ritual.weather &&
+        (!ritual.moonPhase || moonPhases[currentMoonPhaseIndex] === ritual.moonPhase);
 }
 
 function performRitual(ritualName) {
@@ -271,25 +272,28 @@ function getRelationshipStatus(points) {
 
 function villagerInteractions() {
     let gameDisplayDiv = document.getElementById('game-display');
-    gameDisplayDiv.innerHTML = ''; 
+    gameDisplayDiv.innerHTML = '';
     let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
     let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
 
     availableVillagers.forEach(villager => {
         let villagerDiv = document.createElement('div');
-        let relationshipPoints = villagerRelationships[villager][currentDruidKey];
+        let relationshipPoints = villagerRelationships[villager.name][currentDruidKey];
         let relationshipStatus = getRelationshipStatus(relationshipPoints);
 
-        villagerDiv.innerHTML = `${villager}: Relationship Status - ${relationshipStatus}`;
+        let villagerObject = villagers.find(v => v.name === villager.name);
+        let mood = villagerObject ? villagerObject.mood : "Unknown";
+
+        villagerDiv.innerHTML = `${villager.name}: Relationship Status - ${relationshipStatus} <span class='mood-display'>Mood: ${mood}</span>`;
         let talkButton = document.createElement('button');
         talkButton.textContent = 'Talk';
 
-        if (druidSpecificTalkedToday[villager]) {
+        if (druidSpecificTalkedToday[villager.name]) {
             talkButton.disabled = true;
             talkButton.style.opacity = 0.5;
         } else {
-            talkButton.addEventListener('click', function() {
-                talkToVillager(villager);
+            talkButton.addEventListener('click', function () {
+                talkToVillager(villager.name);
             });
         }
 
@@ -298,10 +302,10 @@ function villagerInteractions() {
     });
 }
 
-
 function endTurn() {
     // Switch turns between Day Druid and Night Druid
     isDayTurn = !isDayTurn;
+    assignVillagerMoods();
 
     // If it's now the Day Druid's turn, it means the Night Druid has just finished their turn
     if (isDayTurn) {
@@ -350,18 +354,35 @@ function endTurn() {
 }
 
 function generateVillagerList() {
-    let villagerNames = [
-        "Aelwyn", "Bran", "Ceridwen", "Daveth", "Eira",
-        "Ffion", "Gareth", "Heulwen", "Ifor", "Jocelyn",
-        "Kai", "Llew", "Maelona", "Nia", "Owain",
-        "Pryderi", "Rhian", "Seren", "Taliesin", "Una"
+    let villagerList = [
+        { name: 'Aelwyn', mood: 'Happy' },
+        { name: 'Bran', mood: 'Sad' },
+        { name: 'Ceridwen', mood: 'Happy' },
+        { name: 'Daveth', mood: 'Sad' },
+        { name: 'Eira', mood: 'Happy' },
+        { name: 'Ffion', mood: 'Sad' },
+        { name: 'Gareth', mood: 'Happy' },
+        { name: 'Heulwen', mood: 'Sad' },
+        { name: 'Ifor', mood: 'Happy' },
+        { name: 'Jocelyn', mood: 'Sad' },
+        { name: 'Kai', mood: 'Happy' },
+        { name: 'Llew', mood: 'Sad' },
+        { name: 'Maelona', mood: 'Happy' },
+        { name: 'Nia', mood: 'Sad' },
+        { name: 'Owain', mood: 'Happy' },
+        { name: 'Pryderi', mood: 'Sad' },
+        { name: 'Rhian', mood: 'Happy' },
+        { name: 'Seren', mood: 'Sad' },
+        { name: 'Taliesin', mood: 'Happy' },
+        { name: 'Una', mood: 'Sad' },
+        // ... other villagers
     ];
-       // Initialize relationships for each villager
-       villagerNames.forEach(villagerName => {
-        villagerRelationships[villagerName] = { "dayDruid": 0, "nightDruid": 0 };
+    // Initialize relationships for each villager
+    villagerList.forEach(v => {
+        villagerRelationships[v.name] = { "dayDruid": 0, "nightDruid": 0 };
     });
 
-    return villagerNames;
+    return villagerList;
 }
 
 function pickRandomVillagers() {
@@ -375,58 +396,73 @@ function pickRandomVillagers() {
     return selected;
 }
 
+function assignVillagerMoods() {
+    villagers.forEach(villager => {
+        villager.mood = moods[Math.floor(Math.random() * moods.length)];
+    });
+}
+
 function talkToVillager(villagerName) {
     if (actionPoints >= 1) {
-      let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
-      let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
-  
-      if (!druidSpecificTalkedToday[villagerName]) {
-        let pointsToAdd = 1;
-        if (activeRitualEffects.lunarBondingActive) {
-          pointsToAdd *= 2;
-        }
-  
-        villagerRelationships[villagerName][currentDruidKey] += pointsToAdd;
-  
-        let points = villagerRelationships[villagerName][currentDruidKey];
-        let status = getRelationshipStatus(points);
-  
-        // Determine which set of dialogues to use
-        let randomChance = Math.random();
-        let selectedDialogue;
-        if (randomChance < 0.3) {
-          // 30% chance for standard dialogue
-          selectedDialogue = getRandomDialogue(dialogues[villagerName].standard);
-        } else if (randomChance < 0.8) {
-          // 50% chance for status-based dialogue
-          selectedDialogue = getRandomDialogue(dialogues[villagerName].status[status]);
+        let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
+        let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
+
+        if (!druidSpecificTalkedToday[villagerName]) {
+            let pointsToAdd = 1;
+            if (activeRitualEffects.lunarBondingActive) {
+                pointsToAdd *= 2;
+            }
+
+            villagerRelationships[villagerName][currentDruidKey] += pointsToAdd;
+
+            let points = villagerRelationships[villagerName][currentDruidKey];
+            let status = getRelationshipStatus(points);
+
+            // Determine the type of response
+            let responseChance = Math.random();
+            let selectedDialogue;
+            if (responseChance < 0.20) {
+                // Standard response
+                selectedDialogue = dialogues[villagerName].standard[Math.floor(Math.random() * dialogues[villagerName].standard.length)];
+            } else if (responseChance < 0.55) {
+                // Status response
+                let statusDialogues = dialogues[villagerName].status;
+                selectedDialogue = statusDialogues[status][Math.floor(Math.random() * statusDialogues[status].length)];
+            } else if (responseChance < 0.90) {
+                // Mood response
+                let mood = villagers.find(villager => villager.name === villagerName).mood;
+                let moodDialogues = dialogues[villagerName].mood;
+                selectedDialogue = moodDialogues[mood][Math.floor(Math.random() * moodDialogues[mood].length)];
+            } else {
+                // Special response
+                let specialDialogues = dialogues[villagerName].special;
+                selectedDialogue = specialDialogues[Math.floor(Math.random() * specialDialogues.length)];
+            }
+
+
+            // Display the selected dialogue
+            document.getElementById('game-display').textContent = selectedDialogue;
+
+
+            druidSpecificTalkedToday[villagerName] = true;
+            hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
+
+            actionPoints -= 1;
+            updateTurnDisplay();
         } else {
-          // 20% chance for special dialogue if unlocked
-          selectedDialogue = getRandomDialogue(dialogues[villagerName].special);
+            alert("You have already talked to this villager today.");
         }
-  
-        // Display the selected dialogue in the game display
-        document.getElementById('game-display').textContent = selectedDialogue;
-  
-        druidSpecificTalkedToday[villagerName] = true;
-        hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
-  
-        actionPoints -= 1;
-        updateTurnDisplay();
-      } else {
-        alert("You have already talked to this villager today.");
-      }
     } else {
-      alert("Not enough action points!");
+        alert("Not enough action points!");
     }
-  }
-  
-  function getRandomDialogue(dialogueArray) {
+}
+
+function getRandomDialogue(dialogueArray) {
     if (dialogueArray && dialogueArray.length > 0) {
-      return dialogueArray[Math.floor(Math.random() * dialogueArray.length)];
+        return dialogueArray[Math.floor(Math.random() * dialogueArray.length)];
     }
     return "They have nothing to say right now."; // Fallback dialogue
-  }
+}
 
 function updateSeasonAndDay() {
     if (dayCount > 15) {
@@ -435,8 +471,8 @@ function updateSeasonAndDay() {
             case 'Spring': season = 'Summer'; break;
             case 'Summer': season = 'Fall'; break;
             case 'Fall': season = 'Winter'; break;
-            case 'Winter': 
-                season = 'Spring'; 
+            case 'Winter':
+                season = 'Spring';
                 currentYear++;  // Increment the year after winter
                 break;
         }
@@ -466,7 +502,7 @@ function updateMoonPhase() {
 
 function updateDisplayHeaders() {
     var seasonText = season + ", Day " + dayCount + ", Year " + currentYear;
-    var weatherText = currentWeather; 
+    var weatherText = currentWeather;
     var moonText = "";
 
     if (!isDayTurn) {
@@ -487,6 +523,6 @@ const myFuncs = {
     planFestivals: planFestivals,
     villagerInteractions: villagerInteractions,
     endTurn: endTurn,
-  }
-  
-  window.myFuncs = myFuncs;
+}
+
+window.myFuncs = myFuncs;
