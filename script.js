@@ -377,6 +377,7 @@ function generateVillagerList() {
         { name: 'Una', mood: 'Sad' },
         // ... other villagers
     ];
+    assignVillagerMoods(); 
     // Initialize relationships for each villager
     villagerList.forEach(v => {
         villagerRelationships[v.name] = { "dayDruid": 0, "nightDruid": 0 };
