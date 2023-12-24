@@ -439,6 +439,7 @@ function talkToVillager(villagerName) {
                 selectedDialogue = specialDialogues[Math.floor(Math.random() * specialDialogues.length)];
             }
 
+            // Add additional checks here (IE. Quests, special interactions based on progress/items, ect) 
 
             // Display the selected dialogue
             document.getElementById('game-display').textContent = selectedDialogue;
