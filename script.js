@@ -286,30 +286,41 @@ function villagerInteractions() {
 
     availableVillagers.forEach(villager => {
         let villagerDiv = document.createElement('div');
+        villagerDiv.classList.add('villager-interaction'); // Make sure to define this class in your CSS
+        
         let relationshipPoints = villagerRelationships[villager.name][currentDruidKey];
         let relationshipStatus = getRelationshipStatus(relationshipPoints);
 
         let villagerObject = villagers.find(v => v.name === villager.name);
         let mood = villagerObject ? villagerObject.mood : "Unknown";
 
-        villagerDiv.innerHTML = `${villager.name}: Relationship Status - ${relationshipStatus} <span class='mood-display'>Mood: ${mood}</span>`;
-        let talkButton = document.createElement('button');
-        talkButton.textContent = 'Talk';
+        // Use the appropriate image based on the villager's gender
+        let imageFileName = villagerObject.gender === 'Female' ? 'fImage.PNG' : 'mImage.PNG';
+        villagerDiv.innerHTML = `
+            <div class="villager-portrait">
+                <img src="images/Villager Portraits/${imageFileName}" alt="${villager.name}">
+            </div>
+            <div class="villager-info">
+                <span class="villager-name">${villager.name}:</span>
+                <span class="relationship-status">Relationship Status - ${relationshipStatus}</span>
+                <span class='mood-display'>Mood: ${mood}</span>
+                <button class="talk-button">Talk</button>
+            </div>
+        `;
 
+        let talkButton = villagerDiv.querySelector('.talk-button');
         if (druidSpecificTalkedToday[villager.name]) {
             talkButton.disabled = true;
-            talkButton.style.opacity = 0.5;
+            talkButton.classList.add('talked'); // Add a class for talked state
         } else {
             talkButton.addEventListener('click', function () {
                 talkToVillager(villager.name);
             });
         }
 
-        villagerDiv.appendChild(talkButton);
         gameDisplayDiv.appendChild(villagerDiv);
     });
 }
-
 function endTurn() {
     // Switch turns between Day Druid and Night Druid
     isDayTurn = !isDayTurn;
@@ -363,26 +374,26 @@ function endTurn() {
 
 function generateVillagerList() {
     let villagerList = [
-        { name: 'Aelwyn', mood: 'Happy' },
-        { name: 'Bran', mood: 'Sad' },
-        { name: 'Ceridwen', mood: 'Happy' },
-        { name: 'Daveth', mood: 'Sad' },
-        { name: 'Eira', mood: 'Happy' },
-        { name: 'Ffion', mood: 'Sad' },
-        { name: 'Gareth', mood: 'Happy' },
-        { name: 'Heulwen', mood: 'Sad' },
-        { name: 'Ifor', mood: 'Happy' },
-        { name: 'Jocelyn', mood: 'Sad' },
-        { name: 'Kai', mood: 'Happy' },
-        { name: 'Llew', mood: 'Sad' },
-        { name: 'Maelona', mood: 'Happy' },
-        { name: 'Nia', mood: 'Sad' },
-        { name: 'Owain', mood: 'Happy' },
-        { name: 'Pryderi', mood: 'Sad' },
-        { name: 'Rhian', mood: 'Happy' },
-        { name: 'Seren', mood: 'Sad' },
-        { name: 'Taliesin', mood: 'Happy' },
-        { name: 'Una', mood: 'Sad' },
+        { name: 'Aelwyn', mood: 'Happy', gender:'Female', race: 'Elf', age: '30' },
+        { name: 'Bran', mood: 'Sad', gender:'Male', race: 'Human', age: '40' },
+        { name: 'Ceridwen', mood: 'Happy', gender:'Female', race:'Human', age:'25' },
+        { name: 'Daveth', mood: 'Sad', gender:'Male' , race: 'Dwarf', age: '55'},
+        { name: 'Eira', mood: 'Happy', gender:'Female' , race: 'Elf', age: '20'},
+        { name: 'Ffion', mood: 'Sad', gender:'Female' , race: 'Human', age: '45'},
+        { name: 'Gareth', mood: 'Happy', gender:'Male' , race: 'Elf', age: '50'},
+        { name: 'Heulwen', mood: 'Sad', gender:'Female' , race: 'Half-Elf', age: '22'},
+        { name: 'Ifor', mood: 'Happy', gender:'Male' , race: 'Gnome', age: '60'},
+        { name: 'Jocelyn', mood: 'Sad', gender:'Female' , race: 'Human', age: '28'},
+        { name: 'Kai', mood: 'Happy', gender:"Male" , race: 'Human', age: '30'},
+        { name: 'Llew', mood: 'Sad', gender:'Male' , race: 'Elf', age: '35'},
+        { name: 'Maelona', mood: 'Happy', gender:'Female' , race: 'Elf', age: '40'},
+        { name: 'Nia', mood: 'Sad', gender:'Female' , race: 'Human', age: '18'},
+        { name: 'Owain', mood: 'Happy', gender:'Male' , race: 'Human', age: '45'},
+        { name: 'Pryderi', mood: 'Sad', gender:'Male' , race: 'Dwarf', age: '50'},
+        { name: 'Rhian', mood: 'Happy', gender:'Female' , race: 'Elf', age: '55'},
+        { name: 'Seren', mood: 'Sad', gender:'Female' , race: 'Elf', age: '32'},
+        { name: 'Taliesin', mood: 'Happy', gender:'Male' , race: 'Half-Elf', age: '27'},
+        { name: 'Una', mood: 'Sad', gender:'Female' , race: 'Faerie', age: '24'},
         // ... other villagers
     ];
     assignVillagerMoods(villagerList); 

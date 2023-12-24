@@ -100,3 +100,62 @@ body {
     margin-left: 10px;
     font-style: italic;
 }
+
+.villager-interaction {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px; /* Space between villager interactions */
+}
+
+.villager-portrait img {
+    width: 80px; /* Adjust as needed */
+    height: 80px; /* Adjust as needed */
+    border-radius: 50%; /* Circular portraits */
+    margin-right: 15px;
+}
+
+.villager-info {
+    flex-grow: 1;
+}
+
+.villager-name {
+    font-weight: bold;
+}
+
+.relationship-status {
+    display: block; /* Puts the status on a new line */
+    margin: 5px 0;
+}
+
+.mood-display {
+    display: block; /* Puts the mood on a new line */
+    font-style: italic;
+    margin: 5px 0;
+}
+
+.talk-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.talk-button:hover {
+    background-color: #367B39; /* Darker green on hover */
+}
+
+.talk-button:disabled,
+.talk-button.talked {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* This class is added for the 'talked' state */
+.talked {
+    opacity: 0.5;
+}
