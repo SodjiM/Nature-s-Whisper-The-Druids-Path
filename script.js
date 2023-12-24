@@ -305,7 +305,7 @@ function villagerInteractions() {
 function endTurn() {
     // Switch turns between Day Druid and Night Druid
     isDayTurn = !isDayTurn;
-    assignVillagerMoods();
+    assignVillagerMoods(villagers);
 
     // If it's now the Day Druid's turn, it means the Night Druid has just finished their turn
     if (isDayTurn) {
@@ -377,7 +377,7 @@ function generateVillagerList() {
         { name: 'Una', mood: 'Sad' },
         // ... other villagers
     ];
-    assignVillagerMoods(); 
+    assignVillagerMoods(villagerList); 
     // Initialize relationships for each villager
     villagerList.forEach(v => {
         villagerRelationships[v.name] = { "dayDruid": 0, "nightDruid": 0 };
@@ -397,8 +397,8 @@ function pickRandomVillagers() {
     return selected;
 }
 
-function assignVillagerMoods() {
-    villagers.forEach(villager => {
+function assignVillagerMoods(vlist) {
+    vlist.forEach(villager => {
         villager.mood = moods[Math.floor(Math.random() * moods.length)];
     });
 }
