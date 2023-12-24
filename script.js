@@ -65,6 +65,13 @@ let rituals = {
     }
 };
 
+document.getElementById('game-display').innerHTML = `
+    <h2>Nature's Whisper: The Druids' Path</h2>
+    <p>In the heart of an ancient, mystical forest, where nature and magic are one, stands the Old Oak - a symbol of wisdom and balance. Both the Day Druid and Night Druid are called upon to unravel the mystery of the Old Oak's recent whispers. These cryptic messages hint at a disturbance in the natural order, threatening the harmony of the forest and its inhabitants.</p>
+    <p>Your journey is not just one of discovery but of maintaining the delicate balance between day and night, growth and decay. Develop deep connections with the unique villagers, each with their own story and role in preserving the village. Explore hidden realms, uncover age-old secrets, and face challenges that test your connection to nature.</p>
+    <p>Work alongside your partner to interpret the whispers of the Old Oak. Your choices and actions will shape the fate of the village and the forest itself. Connect with others, discover  mysteries, and ensure the harmony of the natural world.</p>
+    <p>Are you ready to listen to Nature's Whisper?</p>
+`;
 
 function startGame() {
     dayDruidName = document.getElementById('day-druid-name').value;
