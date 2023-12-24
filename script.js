@@ -64,7 +64,7 @@ let rituals = {
     }
 };
 
-
+                                                
 function startGame() {
     dayDruidName = document.getElementById('day-druid-name').value;
     nightDruidName = document.getElementById('night-druid-name').value;
@@ -377,41 +377,56 @@ function pickRandomVillagers() {
 
 function talkToVillager(villagerName) {
     if (actionPoints >= 1) {
-        let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
-        let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
-
-        if (!druidSpecificTalkedToday[villagerName]) {
-            let pointsToAdd = 1;
-            if (activeRitualEffects.lunarBondingActive) {
-                pointsToAdd *= 2;
-            }
-
-            villagerRelationships[villagerName][currentDruidKey] += pointsToAdd;
-
-            // Determine the relationship status based on points
-            let points = villagerRelationships[villagerName][currentDruidKey];
-            let status = getRelationshipStatus(points);
-
-            // Select dialogue based on the relationship status
-            let villagerDialogues = dialogues[villagerName][status];
-            let selectedDialogue = villagerDialogues[Math.floor(Math.random() * villagerDialogues.length)];
-
-            // Display the selected dialogue in the game display
-            document.getElementById('game-display').textContent = selectedDialogue;
-
-            druidSpecificTalkedToday[villagerName] = true;
-            hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
-
-            villagerInteractions();
-            actionPoints -= 1;
-            updateTurnDisplay();
-        } else {
-            alert("You have already talked to this villager today.");
+      let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
+      let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
+  
+      if (!druidSpecificTalkedToday[villagerName]) {
+        let pointsToAdd = 1;
+        if (activeRitualEffects.lunarBondingActive) {
+          pointsToAdd *= 2;
         }
+  
+        villagerRelationships[villagerName][currentDruidKey] += pointsToAdd;
+  
+        let points = villagerRelationships[villagerName][currentDruidKey];
+        let status = getRelationshipStatus(points);
+  
+        // Determine which set of dialogues to use
+        let randomChance = Math.random();
+        let selectedDialogue;
+        if (randomChance < 0.3) {
+          // 30% chance for standard dialogue
+          selectedDialogue = getRandomDialogue(dialogues[villagerName].standard);
+        } else if (randomChance < 0.8) {
+          // 50% chance for status-based dialogue
+          selectedDialogue = getRandomDialogue(dialogues[villagerName].status[status]);
+        } else {
+          // 20% chance for special dialogue if unlocked
+          selectedDialogue = getRandomDialogue(dialogues[villagerName].special);
+        }
+  
+        // Display the selected dialogue in the game display
+        document.getElementById('game-display').textContent = selectedDialogue;
+  
+        druidSpecificTalkedToday[villagerName] = true;
+        hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
+  
+        actionPoints -= 1;
+        updateTurnDisplay();
+      } else {
+        alert("You have already talked to this villager today.");
+      }
     } else {
-        alert("Not enough action points!");
+      alert("Not enough action points!");
     }
-}
+  }
+  
+  function getRandomDialogue(dialogueArray) {
+    if (dialogueArray && dialogueArray.length > 0) {
+      return dialogueArray[Math.floor(Math.random() * dialogueArray.length)];
+    }
+    return "They have nothing to say right now."; // Fallback dialogue
+  }
 
 function updateSeasonAndDay() {
     if (dayCount > 15) {
