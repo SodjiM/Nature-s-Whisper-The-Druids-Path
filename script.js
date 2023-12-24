@@ -74,6 +74,7 @@ document.getElementById('game-display').innerHTML = `
 `;
 
 function startGame() {
+    document.getElementById('game-display').innerHTML = ''
     dayDruidName = document.getElementById('day-druid-name').value;
     nightDruidName = document.getElementById('night-druid-name').value;
     document.getElementById('name-form').style.display = 'none';
