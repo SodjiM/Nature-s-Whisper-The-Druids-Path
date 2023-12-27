@@ -34,6 +34,12 @@ let weatherBySeason = {
     "Fall": ["Windy", "Cloudy", "Rainy"],
     "Winter": ["Snowy", "Cloudy", "Cold"]
 };
+let wildlandsAreas = [
+    { name: 'Grasslands', img: 'images/wildlands/grasslands.png', desc: 'Expansive grasslands with various herbs.', cost: 1 },
+    { name: 'Forest', img: 'images/wildlands/forest.png', desc: 'A dense forest teeming with life.', cost: 2 },
+    { name: 'Mines', img: 'images/wildlands/mines.png', desc: 'Ancient mines with hidden treasures.', cost: 3 },
+    // Add more wildlands areas as needed
+]
 let currentWeather = "";
 let rituals = {
     "Sun's Embrace": {
@@ -102,40 +108,234 @@ function updateTurnDisplay() {
     document.getElementById('day-counter').textContent = `${season}, Day ${dayCount}`;
 }
 
-function exploreWildlands() {
-    if (actionPoints >= 2) {
-        actionPoints -= 2;
-        let exploreResult = Math.random();
-        let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+function exploreWildlandsOptions() {
+    let gameDisplayDiv = document.getElementById('game-display');
+    gameDisplayDiv.innerHTML = '<h2>Explore Wildlands</h2>';
 
-        if (exploreResult < 0.1) {
-            // Something bad happens
-            if (currentInventory.length > 0) {
-                currentInventory.pop(); // Lose the last item in inventory
-                document.getElementById('game-display').textContent = 'Oh no! A wild beast appeared, and you lost an item!';
-            } else {
-                document.getElementById('game-display').textContent = 'A wild beast appeared, but you had nothing to lose!';
-            }
-        } else if (exploreResult < 0.3) {
-            // Lose AP
-            actionPoints = Math.max(0, actionPoints - 2);
-            document.getElementById('game-display').textContent = 'You got lost! This cost you extra action points.';
-        } else if (exploreResult < 0.8) {
-            // Regular item find
-            let items = ['Herbs', 'Berries', 'Wood', 'Stone', 'Crystal'];
-            let gainedItem = items[Math.floor(Math.random() * items.length)];
-            currentInventory.push(gainedItem);
-            document.getElementById('game-display').textContent = `You found some ${gainedItem}!`;
-        } else {
-            // Rare item find
-            let rareItems = ['Sunstone Crystal', 'Blue Sapphire', 'Feather of a Hawk', 'Golden Wheat Sheaf', 'Heartstone Gem'];
-            let gainedRareItem = rareItems[Math.floor(Math.random() * rareItems.length)];
-            currentInventory.push(gainedRareItem);
-            document.getElementById('game-display').textContent = `You found a rare item: ${gainedRareItem}!`;
-        }
-        updateTurnDisplay();
+    wildlandsAreas.forEach(area => {
+        let areaDiv = document.createElement('div');
+        areaDiv.classList.add('wildland-interaction');
+
+        areaDiv.innerHTML = `
+            <div class="wildland-portrait">
+                <img src="${area.img}" alt="${area.name}" style="width: 150px; height: 100px;">
+            </div>
+            <div class="wildland-info">
+                <strong>${area.name}</strong>
+                <p>${area.desc}</p>
+                <p>Cost: ${area.cost} Action Points</p>
+                <button class="explore-button" onclick="myFuncs.explore('${area.name}')">Explore</button>
+            </div>
+        `;
+
+        gameDisplayDiv.appendChild(areaDiv);
+    });
+}
+
+function explore(areaName) {
+    let explorationResult;
+    switch (areaName) {
+        case 'Grasslands':
+            explorationResult = exploreGrasslands();
+            break;
+        case 'Forest':
+            explorationResult = exploreForest();
+            break;
+        case 'Mines':
+            explorationResult = exploreMines();
+            break;
+        default:
+            explorationResult = "Unknown area.";
+            break;
+    }
+
+    displayExplorationResults(areaName, explorationResult);
+}
+
+function displayExplorationResults(areaName, result) {
+    let gameDisplayDiv = document.getElementById('game-display');
+    let selectedArea = wildlandsAreas.find(area => area.name === areaName);
+
+    gameDisplayDiv.innerHTML = `
+        <div id="explore-result">
+            <div class="explore-image">
+                 <img src="${selectedArea.img}" alt="${selectedArea.name}" width="300" height="200">
+        </div>
+            </div>
+            <div class="explore-text">
+                <h2>${selectedArea.name}</h2>
+                <p>${result}</p>
+            </div>
+        </div>
+        <button onclick="myFuncs.explore('${areaName}')">Explore Again</button>
+<button onclick="myFuncs.exploreWildlandsOptions()">Change Location</button>
+    `;
+}
+
+function exploreGrasslands() {
+    if (actionPoints <= 0) {
+        let message = "You don't have enough action points to explore.";
+        document.getElementById('game-display').textContent = message;
+        alert(message); // Show an alert to the player
+        return "Not enough action points."; // Return a message to avoid undefined
+    }
+    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    const result = Math.random();
+    actionPoints -= 1;
+    updateTurnDisplay();
+
+    if (result < 0.25) {
+        return `
+        You tread lightly through the swaying fields, feeling the soft earth beneath your feet.
+        <br><br>
+        <b>Your exploration yielded a peaceful moment of tranquility.</b>
+      `;
+    } else if (result < 0.50) {
+        currentInventory.push('Herbs');
+        return `
+        A fragrant scent catches your attention, leading you to a hidden grove of vibrant herbs. Their leaves shimmer with dewdrops, and their petals pulse with vibrant life. You carefully gather these gifts of nature, knowing their healing properties will be invaluable in your quest.
+        <br><br>
+        <b>Herbs added to your inventory!</b>
+      `;
+    } else if (result < 0.95) {
+        currentInventory.push('Flint');
+        return `
+        Amidst the whispering grasses, your keen eyes spot a gleaming stone. You kneel and unearth a sharp piece of flint, its edges hinting at the ancient forces that shaped it. The spirits of fire whisper within its core, promising a spark to ignite your path forward.
+        <br><br>
+        <b>Flint added to your inventory!</b>
+      `;
     } else {
-        alert("Not enough action points!");
+        const rareItemResult = Math.random();
+        if (rareItemResult < 0.50) {
+            currentInventory.push('Golden Wheat Sheaf');
+            return `
+            A radiant glow emerges from the heart of the grasslands, drawing your gaze to a mesmerizing sight. As you approach, you discover a sheaf of wheat unlike any other, its golden stalks shimmering with the sun's essence. You carefully gather the precious grain, feeling its warmth radiate through your fingertips.
+            <br><br>
+            <span style="color: #DAA520;"> <b>Golden Wheat Sheaf </span> added to your inventory!</b>
+          `;
+        } else {
+            currentInventory.push('Ancient Coin');
+            return `
+            A whisper of forgotten ages calls to you from beneath the roots of a gnarled tree. You kneel and gently brush aside the earth, revealing a gleaming coin that has weathered countless seasons. Its markings bear symbols of a lost civilization, and you feel the weight of history cradled in your palm.
+            <br><br>
+            <b><span style="color: #DAA520;"> Ancient Coin </span> added to your inventory!</b>
+          `;
+        }
+    }
+}
+
+function exploreForest() {
+    if (actionPoints <= 1) {
+        let message = "You don't have enough action points to explore.";
+        document.getElementById('game-display').textContent = message;
+        alert(message); // Show an alert to the player
+        return "Not enough action points."; // Return a message to avoid undefined
+    }
+
+    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    actionPoints -= 2;
+    updateTurnDisplay();
+    const result = Math.random();
+
+    if (result < 0.20) {
+        return `
+        The forest whispers secrets in the rustling leaves, but today its gifts remain hidden. Your footsteps alone echo through the ancient trees.
+        <br><br>
+        <b>Your exploration yields a tranquil moment amidst the trees.</b>
+      `;
+    } else if (result < 0.50) {
+        currentInventory.push('Wild Berries');
+        return `
+        A burst of color catches your eye amidst the verdant foliage. You reach out to find a cluster of plump wild berries, their vibrant hues promising a burst of sweetness.
+        <br><br>
+        <b>Wild Berries added to your inventory!</b>
+      `;
+    } else if (result < 0.75) {
+        currentInventory.push('Wooden Branch');
+        return `
+        Under a canopy of emerald leaves, you spot a fallen branch, its wood weathered yet sturdy. It hums with the forest's energy, offering potential for crafting and kindling.
+        <br><br>
+        <b>Wooden Branch added to your inventory!</b>
+      `;
+
+    } else {
+        const rareItemResult = Math.random();
+        if (rareItemResult < 0.5) {
+          currentInventory.push('Feather of a Hawk');
+          return `
+            A hush falls over the forest as you approach a sun-dappled glade. There, nestled among emerald ferns, a pristine Feather of a Hawk awaits. Its silky ebony is accented by a single white stripe, embodying both strength and grace. You carefully pluck the feather, sensing the spirit of the hawk guiding your journey.
+            <br><br>
+            <b>Feather of a Hawk added to your inventory!</b>
+          `;
+        } else {
+          currentInventory.push('Enchanted Acorn');
+          return `
+            The forest invites you deeper, where ancient trees whisper secrets of the past. Beneath their gnarled roots, you glimpse a soft, ethereal glow. As you draw closer, you discover an Enchanted Acorn nestled within a bed of moss. Its shell shimmers with an otherworldly aura, promising hidden potential. You cradle the acorn in your palm, feeling its warmth pulse with the forest's ancient magic.
+            <br><br>
+            <b>Enchanted Acorn added to your inventory!</b>
+          `;
+        }
+      }
+    }
+
+function exploreMines() {
+    if (actionPoints <= 2) {
+        let message = "You don't have enough action points to explore.";
+        document.getElementById('game-display').textContent = message;
+        alert(message); // Show an alert to the player
+        return "Not enough action points."; // Return a message to avoid undefined
+    }
+
+    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    const result = Math.random();
+    actionPoints -= 3;
+    updateTurnDisplay();
+
+    if (result < 0.10) {
+        return `
+        The mines echo with the silence of a slumbering giant. Your lantern casts flickering shadows upon the barren walls, but no treasures reveal themselves today.
+        <br><br>
+        <b>The mines yield no treasures on this venture.</b>
+      `;
+    } else if (result < 0.40) {
+        currentInventory.push('Coal');
+        return `
+        Amidst the dark depths, you uncover a vein of coal, its ebony fragments whispering tales of ancient fires. It promises warmth and energy for the journey ahead.
+        <br><br>
+        <b>Coal added to your inventory!</b>
+      `;
+    } else if (result < 0.65) {
+        currentInventory.push('Iron Ore');
+        return `
+        Your pickaxe strikes a resonant note, revealing a deposit of iron ore. Its metallic gleam hints at potential for crafting sturdy tools and resilient armor.
+        <br><br>
+        <b>Iron Ore added to your inventory!</b>
+      `;
+      } else { 
+        const rareItemResult = Math.random();
+        if (rareItemResult < 0.33) {
+          currentInventory.push('Sunstone');
+          return `
+            As you delve deeper into the mines, a dazzling ray of light pierces the darkness. Embedded within a crystalline formation, a radiant Sunstone awaits. Its golden hues shimmer with the brilliance of a captured star, promising to illuminate even the darkest paths.
+            <br><br>
+            <b>Sunstone added to your inventory!</b>
+          `;
+        } else if(rareItemResult < 0.66) {
+        
+            currentInventory.push('Heartstone Gem');
+            return `
+            A pulsating glow draws your gaze into a hidden crevice. There, nestled within the earth's embrace, lies a Heartstone Gem, its scarlet facets radiating warmth and vitality.
+            <br><br>
+            <b>Heartstone Gem added to your inventory!</b>
+          `;
+        } else {
+          currentInventory.push('Blue Sapphire');
+          return `
+            Within a secluded grotto, sapphire hues dance upon the walls, beckoning you closer. There, amidst the mineral veins, rests a Blue Sapphire of exquisite clarity. Its azure depths whisper secrets of the sea and sky, embodying serenity amidst the earth's embrace.
+            <br><br>
+            <b>Blue Sapphire added to your inventory!</b>
+          `;
+        } 
     }
 }
 
@@ -287,7 +487,7 @@ function villagerInteractions() {
     availableVillagers.forEach(villager => {
         let villagerDiv = document.createElement('div');
         villagerDiv.classList.add('villager-interaction');
-        
+
         let relationshipPoints = villagerRelationships[villager.name][currentDruidKey];
         let relationshipStatus = getRelationshipStatus(relationshipPoints);
 
@@ -375,29 +575,29 @@ function endTurn() {
 
 function generateVillagerList() {
     let villagerList = [
-        { name: 'Aelwyn', mood: 'Happy', gender:'Female', race: 'Elf', age: '30' },
-        { name: 'Bran', mood: 'Sad', gender:'Male', race: 'Human', age: '40' },
-        { name: 'Ceridwen', mood: 'Happy', gender:'Female', race:'Human', age:'25' },
-        { name: 'Daveth', mood: 'Sad', gender:'Male' , race: 'Dwarf', age: '55'},
-        { name: 'Eira', mood: 'Happy', gender:'Female' , race: 'Elf', age: '20'},
-        { name: 'Ffion', mood: 'Sad', gender:'Female' , race: 'Human', age: '45'},
-        { name: 'Gareth', mood: 'Happy', gender:'Male' , race: 'Elf', age: '50'},
-        { name: 'Heulwen', mood: 'Sad', gender:'Female' , race: 'Half-Elf', age: '22'},
-        { name: 'Ifor', mood: 'Happy', gender:'Male' , race: 'Gnome', age: '60'},
-        { name: 'Jocelyn', mood: 'Sad', gender:'Female' , race: 'Human', age: '28'},
-        { name: 'Kai', mood: 'Happy', gender:"Male" , race: 'Human', age: '30'},
-        { name: 'Llew', mood: 'Sad', gender:'Male' , race: 'Elf', age: '35'},
-        { name: 'Maelona', mood: 'Happy', gender:'Female' , race: 'Elf', age: '40'},
-        { name: 'Nia', mood: 'Sad', gender:'Female' , race: 'Human', age: '18'},
-        { name: 'Owain', mood: 'Happy', gender:'Male' , race: 'Human', age: '45'},
-        { name: 'Pryderi', mood: 'Sad', gender:'Male' , race: 'Dwarf', age: '50'},
-        { name: 'Rhian', mood: 'Happy', gender:'Female' , race: 'Elf', age: '55'},
-        { name: 'Seren', mood: 'Sad', gender:'Female' , race: 'Elf', age: '32'},
-        { name: 'Taliesin', mood: 'Happy', gender:'Male' , race: 'Half-Elf', age: '27'},
-        { name: 'Una', mood: 'Sad', gender:'Female' , race: 'Faerie', age: '24'},
+        { name: 'Aelwyn', mood: 'Happy', gender: 'Female', race: 'Elf', age: '30' },
+        { name: 'Bran', mood: 'Sad', gender: 'Male', race: 'Human', age: '40' },
+        { name: 'Ceridwen', mood: 'Happy', gender: 'Female', race: 'Human', age: '25' },
+        { name: 'Daveth', mood: 'Sad', gender: 'Male', race: 'Dwarf', age: '55' },
+        { name: 'Eira', mood: 'Happy', gender: 'Female', race: 'Elf', age: '20' },
+        { name: 'Ffion', mood: 'Sad', gender: 'Female', race: 'Human', age: '45' },
+        { name: 'Gareth', mood: 'Happy', gender: 'Male', race: 'Elf', age: '50' },
+        { name: 'Heulwen', mood: 'Sad', gender: 'Female', race: 'Half-Elf', age: '22' },
+        { name: 'Ifor', mood: 'Happy', gender: 'Male', race: 'Gnome', age: '60' },
+        { name: 'Jocelyn', mood: 'Sad', gender: 'Female', race: 'Human', age: '28' },
+        { name: 'Kai', mood: 'Happy', gender: "Male", race: 'Human', age: '30' },
+        { name: 'Llew', mood: 'Sad', gender: 'Male', race: 'Elf', age: '35' },
+        { name: 'Maelona', mood: 'Happy', gender: 'Female', race: 'Elf', age: '40' },
+        { name: 'Nia', mood: 'Sad', gender: 'Female', race: 'Human', age: '18' },
+        { name: 'Owain', mood: 'Happy', gender: 'Male', race: 'Human', age: '45' },
+        { name: 'Pryderi', mood: 'Sad', gender: 'Male', race: 'Dwarf', age: '50' },
+        { name: 'Rhian', mood: 'Happy', gender: 'Female', race: 'Elf', age: '55' },
+        { name: 'Seren', mood: 'Sad', gender: 'Female', race: 'Elf', age: '32' },
+        { name: 'Taliesin', mood: 'Happy', gender: 'Male', race: 'Half-Elf', age: '27' },
+        { name: 'Una', mood: 'Sad', gender: 'Female', race: 'Faerie', age: '24' },
         // ... other villagers
     ];
-    assignVillagerMoods(villagerList); 
+    assignVillagerMoods(villagerList);
     // Initialize relationships for each villager
     villagerList.forEach(v => {
         villagerRelationships[v.name] = { "dayDruid": 0, "nightDruid": 0 };
@@ -462,9 +662,9 @@ function talkToVillager(villagerName) {
 
             // Add additional checks here (IE. Quests, special interactions based on progress/items, ect) 
 
-             // Display the selected dialogue along with the villager's image
-             let gameDisplayDiv = document.getElementById('game-display');
-             gameDisplayDiv.innerHTML = `
+            // Display the selected dialogue along with the villager's image
+            let gameDisplayDiv = document.getElementById('game-display');
+            gameDisplayDiv.innerHTML = `
                  <div class="villager-interaction">
                      <div class="villager-portrait">
                          <img src="images/Villager Portraits/${villagerName}.PNG" alt="${villagerName}" style="width: 80px; height: 80px;">
@@ -474,7 +674,7 @@ function talkToVillager(villagerName) {
                      </div>
                  </div>
              `;
-             
+
             druidSpecificTalkedToday[villagerName] = true;
             hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
 
@@ -547,7 +747,8 @@ function updateDisplayHeaders() {
 
 const myFuncs = {
     startGame: startGame,
-    exploreWildlands: exploreWildlands,
+    exploreWildlandsOptions: exploreWildlandsOptions,
+    explore: explore,
     visitVillageCenter: visitVillageCenter,
     manageResources: manageResources,
     updateRitualsList: updateRitualsList,

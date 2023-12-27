@@ -100,6 +100,8 @@ body {
 .night-theme .villager-info,
 .night-theme .relationship-status,
 .night-theme .mood-display,
+.night-theme .wildland-portrait,
+.night-theme .wildland-info, 
 .night-theme .villager-dialogue { 
     color: #0e0e0e; /* Choose a light color for better readability */
 }
@@ -185,4 +187,36 @@ body {
 /* This class is added for the 'talked' state */
 .talked {
     opacity: 0.5;
+}
+
+.wildland-interaction {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px; /* Space between wildland options */
+}
+
+.wildland-portrait img {
+    width: 150px; /* Adjust as needed */
+    height: 100px; /* Adjust as needed */
+    margin-right: 15px;
+}
+
+.wildland-info {
+    flex-grow: 1;
+}
+
+.explore-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.explore-button:hover {
+    background-color: #367B39; /* Darker green on hover */
 }
