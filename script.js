@@ -265,14 +265,14 @@ function exploreForest() {
           return `
             A hush falls over the forest as you approach a sun-dappled glade. There, nestled among emerald ferns, a pristine Feather of a Hawk awaits. Its silky ebony is accented by a single white stripe, embodying both strength and grace. You carefully pluck the feather, sensing the spirit of the hawk guiding your journey.
             <br><br>
-            <b>Feather of a Hawk added to your inventory!</b>
+            <b><span style="color: #DAA520;"> Feather of a Hawk </span> added to your inventory!</b>
           `;
         } else {
           currentInventory.push('Enchanted Acorn');
           return `
             The forest invites you deeper, where ancient trees whisper secrets of the past. Beneath their gnarled roots, you glimpse a soft, ethereal glow. As you draw closer, you discover an Enchanted Acorn nestled within a bed of moss. Its shell shimmers with an otherworldly aura, promising hidden potential. You cradle the acorn in your palm, feeling its warmth pulse with the forest's ancient magic.
             <br><br>
-            <b>Enchanted Acorn added to your inventory!</b>
+            <b><span style="color: #DAA520;"> Enchanted Acorn </span> added to your inventory!</b>
           `;
         }
       }
@@ -318,7 +318,7 @@ function exploreMines() {
           return `
             As you delve deeper into the mines, a dazzling ray of light pierces the darkness. Embedded within a crystalline formation, a radiant Sunstone awaits. Its golden hues shimmer with the brilliance of a captured star, promising to illuminate even the darkest paths.
             <br><br>
-            <b>Sunstone added to your inventory!</b>
+            <b><span style="color: #DAA520;"> Sunstone </span>added to your inventory!</b>
           `;
         } else if(rareItemResult < 0.66) {
         
@@ -326,14 +326,14 @@ function exploreMines() {
             return `
             A pulsating glow draws your gaze into a hidden crevice. There, nestled within the earth's embrace, lies a Heartstone Gem, its scarlet facets radiating warmth and vitality.
             <br><br>
-            <b>Heartstone Gem added to your inventory!</b>
+            <b><span style="color: #DAA520;"> Heartstone Gem </span> added to your inventory!</b>
           `;
         } else {
           currentInventory.push('Blue Sapphire');
           return `
             Within a secluded grotto, sapphire hues dance upon the walls, beckoning you closer. There, amidst the mineral veins, rests a Blue Sapphire of exquisite clarity. Its azure depths whisper secrets of the sea and sky, embodying serenity amidst the earth's embrace.
             <br><br>
-            <b>Blue Sapphire added to your inventory!</b>
+            <b><span style="color: #DAA520;"> Blue Sapphire </span> added to your inventory!</b>
           `;
         } 
     }
