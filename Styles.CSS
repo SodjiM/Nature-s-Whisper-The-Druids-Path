@@ -94,13 +94,14 @@ body {
 
 /* Updated styles for villager interaction text in night theme */
 .night-theme .villager-interaction {
-    border-color: #394a54; /* Lighter border for better visibility */
+    border-color: #394a54; 
 }
 
 .night-theme .villager-info,
 .night-theme .relationship-status,
-.night-theme .mood-display {
-    color: #161414; /* Light grey text for better contrast */
+.night-theme .mood-display,
+.night-theme .villager-dialogue { 
+    color: #0e0e0e; /* Choose a light color for better readability */
 }
 
 .night-theme .talk-button {

@@ -286,7 +286,7 @@ function villagerInteractions() {
 
     availableVillagers.forEach(villager => {
         let villagerDiv = document.createElement('div');
-        villagerDiv.classList.add('villager-interaction'); // Make sure to define this class in your CSS
+        villagerDiv.classList.add('villager-interaction');
         
         let relationshipPoints = villagerRelationships[villager.name][currentDruidKey];
         let relationshipStatus = getRelationshipStatus(relationshipPoints);
@@ -294,8 +294,8 @@ function villagerInteractions() {
         let villagerObject = villagers.find(v => v.name === villager.name);
         let mood = villagerObject ? villagerObject.mood : "Unknown";
 
-        // Use the appropriate image based on the villager's gender
-        let imageFileName = villagerObject.gender === 'Female' ? 'fImage.PNG' : 'mImage.PNG';
+        // Use the villager's name to select their specific image file
+        let imageFileName = `${villager.name}.PNG`; // Assuming the file name is exactly the villager's name
         villagerDiv.innerHTML = `
             <div class="villager-portrait">
                 <img src="images/Villager Portraits/${imageFileName}" alt="${villager.name}">
@@ -311,7 +311,7 @@ function villagerInteractions() {
         let talkButton = villagerDiv.querySelector('.talk-button');
         if (druidSpecificTalkedToday[villager.name]) {
             talkButton.disabled = true;
-            talkButton.classList.add('talked'); // Add a class for talked state
+            talkButton.classList.add('talked');
         } else {
             talkButton.addEventListener('click', function () {
                 talkToVillager(villager.name);
@@ -321,6 +321,7 @@ function villagerInteractions() {
         gameDisplayDiv.appendChild(villagerDiv);
     });
 }
+
 function endTurn() {
     // Switch turns between Day Druid and Night Druid
     isDayTurn = !isDayTurn;
@@ -461,10 +462,19 @@ function talkToVillager(villagerName) {
 
             // Add additional checks here (IE. Quests, special interactions based on progress/items, ect) 
 
-            // Display the selected dialogue
-            document.getElementById('game-display').textContent = selectedDialogue;
-
-
+             // Display the selected dialogue along with the villager's image
+             let gameDisplayDiv = document.getElementById('game-display');
+             gameDisplayDiv.innerHTML = `
+                 <div class="villager-interaction">
+                     <div class="villager-portrait">
+                         <img src="images/Villager Portraits/${villagerName}.PNG" alt="${villagerName}" style="width: 80px; height: 80px;">
+                     </div>
+                     <div class="villager-dialogue">
+                         ${selectedDialogue}
+                     </div>
+                 </div>
+             `;
+             
             druidSpecificTalkedToday[villagerName] = true;
             hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
 
