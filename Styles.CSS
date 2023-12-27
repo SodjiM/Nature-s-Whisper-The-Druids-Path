@@ -92,6 +92,32 @@ body {
     color: #eceff1;
 }
 
+/* Updated styles for villager interaction text in night theme */
+.night-theme .villager-interaction {
+    border-color: #394a54; /* Lighter border for better visibility */
+}
+
+.night-theme .villager-info,
+.night-theme .relationship-status,
+.night-theme .mood-display {
+    color: #161414; /* Light grey text for better contrast */
+}
+
+.night-theme .talk-button {
+    background-color: #4CAF50; /* Lighter button background */
+    color: #fff; /* Ensure text is white for better readability */
+}
+
+.night-theme .talk-button:hover {
+    background-color: #367B39; /* Slightly darker button background on hover */
+}
+
+.night-theme .talk-button:disabled,
+.night-theme .talk-button.talked {
+    background-color: #555; /* Darker grey for disabled button */
+    color: #ccc; /* Lighter text for disabled button */
+}
+
 .night-theme #moon-phase {
     display: inline; /* Show inline during Night Druid's turn */
 }
