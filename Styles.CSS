@@ -102,7 +102,14 @@ body {
 .night-theme .mood-display,
 .night-theme .wildland-portrait,
 .night-theme .wildland-info, 
-.night-theme .villager-dialogue { 
+.night-theme .villager-dialogue,
+.night-theme #crafting-section,
+.night-theme #inventory-section, 
+.night-theme .crafting-text,
+.night-theme .inventory-text,
+.night-theme select,
+.night-theme button { 
+    
     color: #0e0e0e; /* Choose a light color for better readability */
 }
 
@@ -220,3 +227,39 @@ body {
 .explore-button:hover {
     background-color: #367B39; /* Darker green on hover */
 }
+
+#crafting-section, #inventory-section {
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+  }
+  
+  #crafting-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .inventory-items {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  
+  .inventory-item {
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+  }
+  
+  .inventory-item img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .inventory-item button {
+    display: block;
+    margin-top: 5px;
+  }

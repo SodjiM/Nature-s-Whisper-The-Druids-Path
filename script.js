@@ -191,14 +191,14 @@ function exploreGrasslands() {
         <b>Your exploration yielded a peaceful moment of tranquility.</b>
       `;
     } else if (result < 0.50) {
-        currentInventory.push('Herbs');
+        addItemToInventory(currentInventory, 'Herbs', 1);
         return `
         A fragrant scent catches your attention, leading you to a hidden grove of vibrant herbs. Their leaves shimmer with dewdrops, and their petals pulse with vibrant life. You carefully gather these gifts of nature, knowing their healing properties will be invaluable in your quest.
         <br><br>
         <b>Herbs added to your inventory!</b>
       `;
     } else if (result < 0.95) {
-        currentInventory.push('Flint');
+        addItemToInventory(currentInventory, 'Flint', 1);
         return `
         Amidst the whispering grasses, your keen eyes spot a gleaming stone. You kneel and unearth a sharp piece of flint, its edges hinting at the ancient forces that shaped it. The spirits of fire whisper within its core, promising a spark to ignite your path forward.
         <br><br>
@@ -207,14 +207,14 @@ function exploreGrasslands() {
     } else {
         const rareItemResult = Math.random();
         if (rareItemResult < 0.50) {
-            currentInventory.push('Golden Wheat Sheaf');
+            addItemToInventory(currentInventory,'Golden Wheat Sheaf', 1);
             return `
             A radiant glow emerges from the heart of the grasslands, drawing your gaze to a mesmerizing sight. As you approach, you discover a sheaf of wheat unlike any other, its golden stalks shimmering with the sun's essence. You carefully gather the precious grain, feeling its warmth radiate through your fingertips.
             <br><br>
             <span style="color: #DAA520;"> <b>Golden Wheat Sheaf </span> added to your inventory!</b>
           `;
         } else {
-            currentInventory.push('Ancient Coin');
+            addItemToInventory(currentInventory,'Ancient Coin', 1);
             return `
             A whisper of forgotten ages calls to you from beneath the roots of a gnarled tree. You kneel and gently brush aside the earth, revealing a gleaming coin that has weathered countless seasons. Its markings bear symbols of a lost civilization, and you feel the weight of history cradled in your palm.
             <br><br>
@@ -244,14 +244,14 @@ function exploreForest() {
         <b>Your exploration yields a tranquil moment amidst the trees.</b>
       `;
     } else if (result < 0.50) {
-        currentInventory.push('Wild Berries');
+        addItemToInventory(currentInventory,'Wild Berries', 1);
         return `
         A burst of color catches your eye amidst the verdant foliage. You reach out to find a cluster of plump wild berries, their vibrant hues promising a burst of sweetness.
         <br><br>
         <b>Wild Berries added to your inventory!</b>
       `;
     } else if (result < 0.75) {
-        currentInventory.push('Wooden Branch');
+        addItemToInventory(currentInventory,'Wooden Branch', 1);
         return `
         Under a canopy of emerald leaves, you spot a fallen branch, its wood weathered yet sturdy. It hums with the forest's energy, offering potential for crafting and kindling.
         <br><br>
@@ -261,14 +261,14 @@ function exploreForest() {
     } else {
         const rareItemResult = Math.random();
         if (rareItemResult < 0.5) {
-          currentInventory.push('Feather of a Hawk');
+            addItemToInventory(currentInventory,'Feather of a Hawk', 1);
           return `
             A hush falls over the forest as you approach a sun-dappled glade. There, nestled among emerald ferns, a pristine Feather of a Hawk awaits. Its silky ebony is accented by a single white stripe, embodying both strength and grace. You carefully pluck the feather, sensing the spirit of the hawk guiding your journey.
             <br><br>
             <b><span style="color: #DAA520;"> Feather of a Hawk </span> added to your inventory!</b>
           `;
         } else {
-          currentInventory.push('Enchanted Acorn');
+            addItemToInventory(currentInventory,'Enchanted Acorn', 1);
           return `
             The forest invites you deeper, where ancient trees whisper secrets of the past. Beneath their gnarled roots, you glimpse a soft, ethereal glow. As you draw closer, you discover an Enchanted Acorn nestled within a bed of moss. Its shell shimmers with an otherworldly aura, promising hidden potential. You cradle the acorn in your palm, feeling its warmth pulse with the forest's ancient magic.
             <br><br>
@@ -298,14 +298,14 @@ function exploreMines() {
         <b>The mines yield no treasures on this venture.</b>
       `;
     } else if (result < 0.40) {
-        currentInventory.push('Coal');
+        addItemToInventory(currentInventory,'Coal', 1);
         return `
         Amidst the dark depths, you uncover a vein of coal, its ebony fragments whispering tales of ancient fires. It promises warmth and energy for the journey ahead.
         <br><br>
         <b>Coal added to your inventory!</b>
       `;
     } else if (result < 0.65) {
-        currentInventory.push('Iron Ore');
+        addItemToInventory(currentInventory,'Iron Ore', 1);
         return `
         Your pickaxe strikes a resonant note, revealing a deposit of iron ore. Its metallic gleam hints at potential for crafting sturdy tools and resilient armor.
         <br><br>
@@ -314,7 +314,7 @@ function exploreMines() {
       } else { 
         const rareItemResult = Math.random();
         if (rareItemResult < 0.33) {
-          currentInventory.push('Sunstone');
+            addItemToInventory(currentInventory,'Sunstone', 1);
           return `
             As you delve deeper into the mines, a dazzling ray of light pierces the darkness. Embedded within a crystalline formation, a radiant Sunstone awaits. Its golden hues shimmer with the brilliance of a captured star, promising to illuminate even the darkest paths.
             <br><br>
@@ -322,20 +322,30 @@ function exploreMines() {
           `;
         } else if(rareItemResult < 0.66) {
         
-            currentInventory.push('Heartstone Gem');
+            addItemToInventory(currentInventory,'Heartstone Gem', 1);
             return `
             A pulsating glow draws your gaze into a hidden crevice. There, nestled within the earth's embrace, lies a Heartstone Gem, its scarlet facets radiating warmth and vitality.
             <br><br>
             <b><span style="color: #DAA520;"> Heartstone Gem </span> added to your inventory!</b>
           `;
         } else {
-          currentInventory.push('Blue Sapphire');
+            addItemToInventory(currentInventory,'Blue Sapphire', 1);
           return `
             Within a secluded grotto, sapphire hues dance upon the walls, beckoning you closer. There, amidst the mineral veins, rests a Blue Sapphire of exquisite clarity. Its azure depths whisper secrets of the sea and sky, embodying serenity amidst the earth's embrace.
             <br><br>
             <b><span style="color: #DAA520;"> Blue Sapphire </span> added to your inventory!</b>
           `;
         } 
+    }
+}
+
+// Helper function to add items to inventory
+function addItemToInventory(inventory, itemName, quantity) {
+    const existingItem = inventory.find(item => item.name === itemName);
+    if (existingItem) {
+        existingItem.quantity += quantity; // Increase quantity if item already exists
+    } else {
+        inventory.push({ name: itemName, quantity: quantity }); // Add new item if it doesn't exist
     }
 }
 
@@ -369,9 +379,96 @@ function degradeVillageFactors() {
 }
 
 function manageResources() {
-    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
-    let inventoryDisplay = currentInventory.length > 0 ? currentInventory.join(', ') : 'Nothing';
-    document.getElementById('game-display').textContent = `You have: ${inventoryDisplay}`;
+    let gameDisplayDiv = document.getElementById('game-display');
+    gameDisplayDiv.innerHTML = ''; // Clear the game display
+
+    // Create and append the crafting section
+    createCraftingSection(gameDisplayDiv);
+
+    // Create and append the inventory section
+    createInventorySection(gameDisplayDiv);
+
+    // Populate the crafting dropdowns based on the current player's inventory
+    populateCraftingOptions();
+
+    // Display the inventory items for the current player
+    displayInventoryItems();
+}
+
+function createCraftingSection(parentElement) {
+    let craftingSection = document.createElement('div');
+    craftingSection.id = 'crafting-section';
+    craftingSection.innerHTML = '<h2>Crafting</h2>';
+    parentElement.appendChild(craftingSection);
+
+    let craftingOptions = document.createElement('div');
+    craftingOptions.id = 'crafting-options';
+    craftingSection.appendChild(craftingOptions);
+
+    for (let i = 0; i < 5; i++) {
+        let selectElement = document.createElement('select');
+        craftingOptions.appendChild(selectElement);
+    }
+
+    let craftButton = document.createElement('button');
+    craftButton.id = 'craft-button';
+    craftButton.textContent = 'Craft';
+    craftingSection.appendChild(craftButton);
+}
+
+function createInventorySection(parentElement) {
+    let inventorySection = document.createElement('div');
+    inventorySection.id = 'inventory-section';
+    inventorySection.innerHTML = '<h2>Inventory</h2>';
+    parentElement.appendChild(inventorySection);
+
+    let inventoryItemsDiv = document.createElement('div');
+    inventoryItemsDiv.className = 'inventory-items';
+    inventorySection.appendChild(inventoryItemsDiv);
+}
+
+function populateCraftingOptions() {
+    // Access the current player's inventory
+    const currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    const craftingOptionsDiv = document.getElementById('crafting-options');
+
+    // Clear out any existing options
+    craftingOptionsDiv.innerHTML = '';
+
+    // Create dropdowns with inventory items
+    for (let i = 0; i < 5; i++) {
+        let selectElement = document.createElement('select');
+        currentInventory.forEach(item => {
+            let optionElement = document.createElement('option');
+            optionElement.value = item.name;
+            optionElement.textContent = `${item.name} x${item.quantity}`;
+            selectElement.appendChild(optionElement);
+        });
+        craftingOptionsDiv.appendChild(selectElement);
+    }
+}
+
+function displayInventoryItems() {
+    // Access the current player's inventory
+    const currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    const inventoryItemsDiv = document.querySelector('.inventory-items');
+
+    // Clear out any existing items
+    inventoryItemsDiv.innerHTML = '';
+
+    // Create inventory item slots
+    currentInventory.forEach(item => {
+        let itemDiv = document.createElement('div');
+        itemDiv.className = 'inventory-item';
+        itemDiv.innerHTML = `
+            <h3>${item.name} x${item.quantity}</h3>
+            <img src="images/items/${item.name}.png" alt="${item.name}">
+            <button onclick="useItem('${item.name}')">Use</button>
+            <button onclick="giveItem('${item.name}')">Give</button>
+            <button onclick="dropItem('${item.name}')">Drop</button>
+        `;
+        inventoryItemsDiv.appendChild(itemDiv);
+    });
 }
 
 function updateRitualsList() {
