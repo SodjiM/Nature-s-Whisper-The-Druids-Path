@@ -1,14 +1,24 @@
 import { dialogues } from './dialogues.js';
 
-let dayDruidName = '';
-let nightDruidName = '';
+let dayDruid = {
+    name: '',
+    inventory: [],
+    actionPoints: 10,
+    hasTalkedToday: {},
+    maxInventorySize: 8
+  };
+  
+  let nightDruid = {
+    name: '',
+    inventory: [],
+    actionPoints: 10,
+    hasTalkedToday: {},
+    maxInventorySize: 8
+  };
 let isDayTurn = true;
-let actionPoints = 10;
 let dayCount = 1;
 let currentYear = 1;
 let season = 'Spring';
-let dayDruidInventory = [];
-let nightDruidInventory = [];
 let villagerRelationships = {};
 const moods = ["Happy", "Sad", "Anxious", "Excited", "Thoughtful"];
 let villagers = generateVillagerList();
@@ -81,8 +91,8 @@ document.getElementById('game-display').innerHTML = `
 
 function startGame() {
     document.getElementById('game-display').innerHTML = ''
-    dayDruidName = document.getElementById('day-druid-name').value;
-    nightDruidName = document.getElementById('night-druid-name').value;
+    dayDruid.name = document.getElementById('day-druid-name').value;
+    nightDruid.name = document.getElementById('night-druid-name').value;
     document.getElementById('name-form').style.display = 'none';
     document.getElementById('navigation-menu').style.display = 'block';
     document.getElementById('sleep-button').style.display = 'block';
@@ -102,9 +112,10 @@ function startGame() {
 
 function updateTurnDisplay() {
     const druidTurn = document.getElementById('druid-turn');
+    const currentDruid = isDayTurn ? dayDruid : nightDruid;
     const theme = isDayTurn ? 'day-theme' : 'night-theme';
     document.body.className = theme;
-    druidTurn.textContent = `It's ${isDayTurn ? dayDruidName : nightDruidName}'s turn. Action Points: ${actionPoints}`;
+    druidTurn.textContent = `It's ${currentDruid.name}'s turn. Action Points: ${currentDruid.actionPoints}`;
     document.getElementById('day-counter').textContent = `${season}, Day ${dayCount}`;
 }
 
@@ -173,16 +184,19 @@ function displayExplorationResults(areaName, result) {
 }
 
 function exploreGrasslands() {
-    if (actionPoints <= 0) {
+    let currentDruid = isDayTurn ? dayDruid : nightDruid;
+    
+    if (currentDruid.actionPoints <= 0) {
         let message = "You don't have enough action points to explore.";
         document.getElementById('game-display').textContent = message;
-        alert(message); // Show an alert to the player
-        return "Not enough action points."; // Return a message to avoid undefined
+        alert(message);
+        return "Not enough action points.";
     }
-    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    
+    currentDruid.actionPoints -= 1; // Deduct an action point from the current druid
+    updateTurnDisplay(); // You might need to update this function too if it uses actionPoints directly
+    
     const result = Math.random();
-    actionPoints -= 1;
-    updateTurnDisplay();
 
     if (result < 0.25) {
         return `
@@ -191,14 +205,14 @@ function exploreGrasslands() {
         <b>Your exploration yielded a peaceful moment of tranquility.</b>
       `;
     } else if (result < 0.50) {
-        addItemToInventory(currentInventory, 'Herbs', 1);
+        addItemToInventory(currentDruid.inventory, 'Herbs', 1);
         return `
         A fragrant scent catches your attention, leading you to a hidden grove of vibrant herbs. Their leaves shimmer with dewdrops, and their petals pulse with vibrant life. You carefully gather these gifts of nature, knowing their healing properties will be invaluable in your quest.
         <br><br>
         <b>Herbs added to your inventory!</b>
       `;
     } else if (result < 0.95) {
-        addItemToInventory(currentInventory, 'Flint', 1);
+        addItemToInventory(currentDruid.inventory, 'Flint', 1);
         return `
         Amidst the whispering grasses, your keen eyes spot a gleaming stone. You kneel and unearth a sharp piece of flint, its edges hinting at the ancient forces that shaped it. The spirits of fire whisper within its core, promising a spark to ignite your path forward.
         <br><br>
@@ -207,14 +221,14 @@ function exploreGrasslands() {
     } else {
         const rareItemResult = Math.random();
         if (rareItemResult < 0.50) {
-            addItemToInventory(currentInventory,'Golden Wheat Sheaf', 1);
+            addItemToInventory(currentDruid.inventory,'Golden Wheat Sheaf', 1);
             return `
             A radiant glow emerges from the heart of the grasslands, drawing your gaze to a mesmerizing sight. As you approach, you discover a sheaf of wheat unlike any other, its golden stalks shimmering with the sun's essence. You carefully gather the precious grain, feeling its warmth radiate through your fingertips.
             <br><br>
             <span style="color: #DAA520;"> <b>Golden Wheat Sheaf </span> added to your inventory!</b>
           `;
         } else {
-            addItemToInventory(currentInventory,'Ancient Coin', 1);
+            addItemToInventory(currentDruid.inventory,'Ancient Coin', 1);
             return `
             A whisper of forgotten ages calls to you from beneath the roots of a gnarled tree. You kneel and gently brush aside the earth, revealing a gleaming coin that has weathered countless seasons. Its markings bear symbols of a lost civilization, and you feel the weight of history cradled in your palm.
             <br><br>
@@ -225,16 +239,18 @@ function exploreGrasslands() {
 }
 
 function exploreForest() {
-    if (actionPoints <= 1) {
+    let currentDruid = isDayTurn ? dayDruid : nightDruid;
+    
+    if (currentDruid.actionPoints <= 1) {
         let message = "You don't have enough action points to explore.";
         document.getElementById('game-display').textContent = message;
-        alert(message); // Show an alert to the player
-        return "Not enough action points."; // Return a message to avoid undefined
+        alert(message);
+        return "Not enough action points.";
     }
+    
+    currentDruid.actionPoints -= 2; // Deduct an action point from the current druid
+    updateTurnDisplay(); // You might need to update this function too if it uses actionPoints directly
 
-    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
-    actionPoints -= 2;
-    updateTurnDisplay();
     const result = Math.random();
 
     if (result < 0.20) {
@@ -244,14 +260,14 @@ function exploreForest() {
         <b>Your exploration yields a tranquil moment amidst the trees.</b>
       `;
     } else if (result < 0.50) {
-        addItemToInventory(currentInventory,'Wild Berries', 1);
+        addItemToInventory(currentDruid.inventory,'Wild Berries', 1);
         return `
         A burst of color catches your eye amidst the verdant foliage. You reach out to find a cluster of plump wild berries, their vibrant hues promising a burst of sweetness.
         <br><br>
         <b>Wild Berries added to your inventory!</b>
       `;
     } else if (result < 0.75) {
-        addItemToInventory(currentInventory,'Wooden Branch', 1);
+        addItemToInventory(currentDruid.inventory,'Wooden Branch', 1);
         return `
         Under a canopy of emerald leaves, you spot a fallen branch, its wood weathered yet sturdy. It hums with the forest's energy, offering potential for crafting and kindling.
         <br><br>
@@ -261,14 +277,14 @@ function exploreForest() {
     } else {
         const rareItemResult = Math.random();
         if (rareItemResult < 0.5) {
-            addItemToInventory(currentInventory,'Feather of a Hawk', 1);
+            addItemToInventory(currentDruid.inventory,'Feather of a Hawk', 1);
           return `
             A hush falls over the forest as you approach a sun-dappled glade. There, nestled among emerald ferns, a pristine Feather of a Hawk awaits. Its silky ebony is accented by a single white stripe, embodying both strength and grace. You carefully pluck the feather, sensing the spirit of the hawk guiding your journey.
             <br><br>
             <b><span style="color: #DAA520;"> Feather of a Hawk </span> added to your inventory!</b>
           `;
         } else {
-            addItemToInventory(currentInventory,'Enchanted Acorn', 1);
+            addItemToInventory(currentDruid.inventory,'Enchanted Acorn', 1);
           return `
             The forest invites you deeper, where ancient trees whisper secrets of the past. Beneath their gnarled roots, you glimpse a soft, ethereal glow. As you draw closer, you discover an Enchanted Acorn nestled within a bed of moss. Its shell shimmers with an otherworldly aura, promising hidden potential. You cradle the acorn in your palm, feeling its warmth pulse with the forest's ancient magic.
             <br><br>
@@ -279,17 +295,19 @@ function exploreForest() {
     }
 
 function exploreMines() {
-    if (actionPoints <= 2) {
+    let currentDruid = isDayTurn ? dayDruid : nightDruid;
+    
+    if (currentDruid.actionPoints <= 2) {
         let message = "You don't have enough action points to explore.";
         document.getElementById('game-display').textContent = message;
-        alert(message); // Show an alert to the player
-        return "Not enough action points."; // Return a message to avoid undefined
+        alert(message);
+        return "Not enough action points.";
     }
-
-    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    
+    currentDruid.actionPoints -= 3; // Deduct an action point from the current druid
+    updateTurnDisplay(); // You might need to update this function too if it uses actionPoints directly
+    
     const result = Math.random();
-    actionPoints -= 3;
-    updateTurnDisplay();
 
     if (result < 0.10) {
         return `
@@ -298,14 +316,14 @@ function exploreMines() {
         <b>The mines yield no treasures on this venture.</b>
       `;
     } else if (result < 0.40) {
-        addItemToInventory(currentInventory,'Coal', 1);
+        addItemToInventory(currentDruid.inventory,'Coal', 1);
         return `
         Amidst the dark depths, you uncover a vein of coal, its ebony fragments whispering tales of ancient fires. It promises warmth and energy for the journey ahead.
         <br><br>
         <b>Coal added to your inventory!</b>
       `;
     } else if (result < 0.65) {
-        addItemToInventory(currentInventory,'Iron Ore', 1);
+        addItemToInventory(currentDruid.inventory,'Iron Ore', 1);
         return `
         Your pickaxe strikes a resonant note, revealing a deposit of iron ore. Its metallic gleam hints at potential for crafting sturdy tools and resilient armor.
         <br><br>
@@ -314,7 +332,7 @@ function exploreMines() {
       } else { 
         const rareItemResult = Math.random();
         if (rareItemResult < 0.33) {
-            addItemToInventory(currentInventory,'Sunstone', 1);
+            addItemToInventory(currentDruid.inventory,'Sunstone', 1);
           return `
             As you delve deeper into the mines, a dazzling ray of light pierces the darkness. Embedded within a crystalline formation, a radiant Sunstone awaits. Its golden hues shimmer with the brilliance of a captured star, promising to illuminate even the darkest paths.
             <br><br>
@@ -322,14 +340,14 @@ function exploreMines() {
           `;
         } else if(rareItemResult < 0.66) {
         
-            addItemToInventory(currentInventory,'Heartstone Gem', 1);
+            addItemToInventory(currentDruid.inventory,'Heartstone Gem', 1);
             return `
             A pulsating glow draws your gaze into a hidden crevice. There, nestled within the earth's embrace, lies a Heartstone Gem, its scarlet facets radiating warmth and vitality.
             <br><br>
             <b><span style="color: #DAA520;"> Heartstone Gem </span> added to your inventory!</b>
           `;
         } else {
-            addItemToInventory(currentInventory,'Blue Sapphire', 1);
+            addItemToInventory(currentDruid.inventory,'Blue Sapphire', 1);
           return `
             Within a secluded grotto, sapphire hues dance upon the walls, beckoning you closer. There, amidst the mineral veins, rests a Blue Sapphire of exquisite clarity. Its azure depths whisper secrets of the sea and sky, embodying serenity amidst the earth's embrace.
             <br><br>
@@ -339,13 +357,12 @@ function exploreMines() {
     }
 }
 
-// Helper function to add items to inventory
 function addItemToInventory(inventory, itemName, quantity) {
-    const existingItem = inventory.find(item => item.name === itemName);
-    if (existingItem) {
-        existingItem.quantity += quantity; // Increase quantity if item already exists
+    let item = inventory.find(item => item.name === itemName);
+    if (item) {
+        item.quantity += quantity;
     } else {
-        inventory.push({ name: itemName, quantity: quantity }); // Add new item if it doesn't exist
+        inventory.push({ name: itemName, quantity: quantity });
     }
 }
 
@@ -393,6 +410,7 @@ function manageResources() {
 
     // Display the inventory items for the current player
     displayInventoryItems();
+    
 }
 
 function createCraftingSection(parentElement) {
@@ -404,11 +422,6 @@ function createCraftingSection(parentElement) {
     let craftingOptions = document.createElement('div');
     craftingOptions.id = 'crafting-options';
     craftingSection.appendChild(craftingOptions);
-
-    for (let i = 0; i < 5; i++) {
-        let selectElement = document.createElement('select');
-        craftingOptions.appendChild(selectElement);
-    }
 
     let craftButton = document.createElement('button');
     craftButton.id = 'craft-button';
@@ -429,11 +442,8 @@ function createInventorySection(parentElement) {
 
 function populateCraftingOptions() {
     // Access the current player's inventory
-    const currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    const currentInventory = isDayTurn ? dayDruid.inventory : nightDruid.inventory;
     const craftingOptionsDiv = document.getElementById('crafting-options');
-
-    // Clear out any existing options
-    craftingOptionsDiv.innerHTML = '';
 
     // Create dropdowns with inventory items
     for (let i = 0; i < 5; i++) {
@@ -449,26 +459,112 @@ function populateCraftingOptions() {
 }
 
 function displayInventoryItems() {
-    // Access the current player's inventory
-    const currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    // Access the current player's inventory and action points
+    const currentDruid = isDayTurn ? dayDruid : nightDruid;
+    const currentInventory = currentDruid.inventory;
     const inventoryItemsDiv = document.querySelector('.inventory-items');
-
-    // Clear out any existing items
-    inventoryItemsDiv.innerHTML = '';
+  console.log("inventoryItemsDiv: ", inventoryItemsDiv)
 
     // Create inventory item slots
     currentInventory.forEach(item => {
-        let itemDiv = document.createElement('div');
-        itemDiv.className = 'inventory-item';
-        itemDiv.innerHTML = `
-            <h3>${item.name} x${item.quantity}</h3>
-            <img src="images/items/${item.name}.png" alt="${item.name}">
-            <button onclick="useItem('${item.name}')">Use</button>
-            <button onclick="giveItem('${item.name}')">Give</button>
-            <button onclick="dropItem('${item.name}')">Drop</button>
-        `;
-        inventoryItemsDiv.appendChild(itemDiv);
+      let itemDiv = document.createElement('div');
+      itemDiv.className = 'inventory-item';
+      itemDiv.innerHTML = `
+        <h3>${item.name} x${item.quantity}</h3>
+        <img src="images/items/${item.name}.png" alt="${item.name}">
+        <button onclick="myFuncs.useItem('${item.name}')">Use</button>
+        <button onclick="myFuncs.giveItem('${item.name}')">Give</button>
+        <button onclick="myFuncs.dropItem('${item.name}')">Drop</button>
+      `;
+      // Append the div to the inventory display
+      inventoryItemsDiv.appendChild(itemDiv);
     });
+  
+    // Update action points display
+    updateTurnDisplay();
+  }
+
+function useItem(itemName) {
+    const useFunction = itemUseEffects[itemName];
+    if (useFunction && canUseItem(itemName)) {
+        useFunction();
+        removeItemFromInventory(currentDruid.inventory, itemName);
+        updateGameDisplay(`${itemName} used successfully.`);
+    } else {
+        updateGameDisplay(`Cannot use ${itemName} at this time.`);
+    }
+}
+
+function canUseItem(itemName) {
+    // Implement logic to check if conditions for using the item are met
+    return true; // Placeholder return value
+}
+
+function giveItem(itemName) {
+    const sourceDruid = isDayTurn ? dayDruid : nightDruid;
+    const targetDruid = isDayTurn ? nightDruid : dayDruid;
+
+    const sourceInventory = sourceDruid.inventory;
+    const targetInventory = targetDruid.inventory;
+
+    if (targetInventory.length < sourceDruid.maxInventorySize) {
+        // Find the item in the source inventory
+        const itemIndex = sourceInventory.findIndex(item => item.name === itemName);
+        
+        if (itemIndex !== -1) {
+            const item = sourceInventory[itemIndex];
+
+            // Check if the target inventory already has this item
+            const targetItemIndex = targetInventory.findIndex(item => item.name === itemName);
+
+            if (targetItemIndex !== -1) {
+                // If the target already has the item, increase its quantity
+                targetInventory[targetItemIndex].quantity += item.quantity;
+            } else {
+                // If the target does not have the item, add it
+                targetInventory.push({ ...item });
+            }
+
+            // Remove the item from the source inventory
+            sourceInventory.splice(itemIndex, 1);
+
+            updateGameDisplay(`${itemName} given to the other player.`);
+        }
+    } else {
+        updateGameDisplay(`The other player's inventory is full.`);
+    }
+
+}
+
+function dropItem(itemName) {
+    const confirmation = confirm(`Are you sure you want to drop all of your ${itemName}?`);
+    if (confirmation) {
+        removeItemFromInventory(itemName);
+        updateGameDisplay(`${itemName} dropped from inventory.`);
+    }
+}
+
+function removeItemFromInventory(itemName) {
+    const currentDruid = isDayTurn ? dayDruid : nightDruid;
+    const currentInventory = currentDruid.inventory;
+    const itemIndex = currentInventory.findIndex(item => item.name === itemName);
+
+    if (itemIndex !== -1) {
+        // Check if the item quantity is more than 1
+        if (currentInventory[itemIndex].quantity > 1) {
+            // If so, just decrease the quantity
+            currentInventory[itemIndex].quantity -= 1;
+        } else {
+            // Otherwise, remove the item entirely
+            currentInventory.splice(itemIndex, 1);
+        }
+    }
+
+}
+
+function updateGameDisplay(message) {
+    const gameDisplayDiv = document.getElementById('game-display');
+    gameDisplayDiv.textContent = message;
 }
 
 function updateRitualsList() {
@@ -492,7 +588,8 @@ function updateRitualsList() {
 }
 
 function canPerformRitual(ritual) {
-    let currentInventory = isDayTurn ? dayDruidInventory : nightDruidInventory;
+    let currentDruid = isDayTurn ? dayDruid : nightDruid;
+    let currentInventory = isDayTurn ? currentDruid.inventory : currentDruid.inventory;
     return currentInventory.includes(ritual.item) &&
         currentWeather === ritual.weather &&
         (!ritual.moonPhase || moonPhases[currentMoonPhaseIndex] === ritual.moonPhase);
@@ -622,6 +719,7 @@ function villagerInteractions() {
 function endTurn() {
     // Switch turns between Day Druid and Night Druid
     isDayTurn = !isDayTurn;
+    const currentDruid = isDayTurn ? dayDruid : nightDruid;
     assignVillagerMoods(villagers);
 
     // If it's now the Day Druid's turn, it means the Night Druid has just finished their turn
@@ -649,7 +747,7 @@ function endTurn() {
     }
 
     // Reset action points for the next Druid's turn
-    actionPoints = 10;
+    currentDruid.actionPoints = 10;
     availableVillagers = pickRandomVillagers();
 
     // Decrement Lunar Bonding Ceremony days remaining
@@ -666,7 +764,7 @@ function endTurn() {
     updateActiveEffectsDisplay(); // Update the active effects display
 
     // Notify players of the turn change
-    let currentDruidName = isDayTurn ? dayDruidName : nightDruidName;
+    let currentDruidName = isDayTurn ? dayDruid.name : nightDruid.name;
     document.getElementById('game-display').textContent = `It's now ${currentDruidName}'s turn.`;
 }
 
@@ -721,9 +819,10 @@ function assignVillagerMoods(vlist) {
 }
 
 function talkToVillager(villagerName) {
-    if (actionPoints >= 1) {
-        let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
-        let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
+    const currentDruid = isDayTurn ? dayDruid : nightDruid;
+    if (currentDruid.actionPoints >= 1) {
+        let currentDruid = isDayTurn ? dayDruid : nightDruid;
+        let druidSpecificTalkedToday = currentDruid.hasTalkedToday || {};
 
         if (!druidSpecificTalkedToday[villagerName]) {
             let pointsToAdd = 1;
@@ -775,7 +874,7 @@ function talkToVillager(villagerName) {
             druidSpecificTalkedToday[villagerName] = true;
             hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
 
-            actionPoints -= 1;
+            currentDruid.actionPoints -= 1;
             updateTurnDisplay();
         } else {
             alert("You have already talked to this villager today.");
@@ -852,6 +951,10 @@ const myFuncs = {
     planFestivals: planFestivals,
     villagerInteractions: villagerInteractions,
     endTurn: endTurn,
+    useItem: useItem,
+    giveItem: giveItem,
+    dropItem: dropItem,
+    removeItemFromInventory: removeItemFromInventory,
 }
 
 window.myFuncs = myFuncs;
