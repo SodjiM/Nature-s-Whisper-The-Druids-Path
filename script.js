@@ -797,11 +797,9 @@ function generateVillagerList() {
     const currentDruid = isDayTurn ? dayDruid : nightDruid; 
     villagerList.forEach(v => {
         if (!villagerRelationships[v.name]) {
-            villagerRelationships[v.name] = {}; // Initialize a new object if it doesn't exist
+            villagerRelationships[v.name] = { '0': 0, '1': 0 }; // Initialize for both druids
         }
-        villagerRelationships[v.name][currentDruid.id] = 0;
-    }
-    );
+    });
     return villagerList;
 }
 
@@ -824,10 +822,9 @@ function assignVillagerMoods(vlist) {
 
 function talkToVillager(villagerName) {
     const currentDruid = isDayTurn ? dayDruid : nightDruid;
-    if (currentDruid.actionPoints >= 1) {
-        let currentDruid = isDayTurn ? dayDruid : nightDruid;
-        let druidSpecificTalkedToday = currentDruid.hasTalkedToday || {};
 
+    if (currentDruid.actionPoints >= 1) {
+        // Check if the current druid has already talked to this villager today
         if (!currentDruid.hasTalkedToday[villagerName]) {
             let pointsToAdd = 1;
             if (activeRitualEffects.lunarBondingActive) {
@@ -861,7 +858,7 @@ function talkToVillager(villagerName) {
             }
 
             // Add additional checks here (IE. Quests, special interactions based on progress/items, ect) 
-
+            currentDruid.hasTalkedToday[villagerName] = true;
             // Display the selected dialogue along with the villager's image
             let gameDisplayDiv = document.getElementById('game-display');
             gameDisplayDiv.innerHTML = `
@@ -875,8 +872,7 @@ function talkToVillager(villagerName) {
                  </div>
              `;
 
-            druidSpecificTalkedToday[villagerName] = true;
-            hasTalkedToday[currentDruid.id] = currentDruid.hasTalkedToday;
+    
 
             currentDruid.actionPoints -= 1;
             updateTurnDisplay();
