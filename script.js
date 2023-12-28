@@ -1,6 +1,7 @@
 import { dialogues } from './dialogues.js';
 
 let dayDruid = {
+    id: 0,
     name: '',
     inventory: [],
     actionPoints: 10,
@@ -9,6 +10,7 @@ let dayDruid = {
   };
   
   let nightDruid = {
+    id: 1,
     name: '',
     inventory: [],
     actionPoints: 10,
@@ -35,7 +37,6 @@ let villagerHappiness = 100; // Max 100
 let villagerHealth = 100; // Max 100
 let villageSafety = 100; // Max 100
 let environmentalHealth = 100; // Max 100
-let hasTalkedToday = {};
 let moonPhases = ["New Moon", "Waxing Crescent", "First Quarter", "Waxing Gibbous", "Full Moon", "Waning Gibbous", "Last Quarter", "Waning Crescent"];
 let currentMoonPhaseIndex = 0;
 let weatherBySeason = {
@@ -675,14 +676,13 @@ function getRelationshipStatus(points) {
 function villagerInteractions() {
     let gameDisplayDiv = document.getElementById('game-display');
     gameDisplayDiv.innerHTML = '';
-    let currentDruidKey = isDayTurn ? 'dayDruid' : 'nightDruid';
-    let druidSpecificTalkedToday = hasTalkedToday[currentDruidKey] || {};
+    let currentDruid = isDayTurn ? dayDruid : nightDruid;
 
     availableVillagers.forEach(villager => {
         let villagerDiv = document.createElement('div');
         villagerDiv.classList.add('villager-interaction');
 
-        let relationshipPoints = villagerRelationships[villager.name][currentDruidKey];
+        let relationshipPoints = villagerRelationships[villager.name][currentDruid.id];
         let relationshipStatus = getRelationshipStatus(relationshipPoints);
 
         let villagerObject = villagers.find(v => v.name === villager.name);
@@ -703,7 +703,7 @@ function villagerInteractions() {
         `;
 
         let talkButton = villagerDiv.querySelector('.talk-button');
-        if (druidSpecificTalkedToday[villager.name]) {
+        if (currentDruid.hasTalkedToday[villager.name]) {
             talkButton.disabled = true;
             talkButton.classList.add('talked');
         } else {
@@ -794,10 +794,14 @@ function generateVillagerList() {
     ];
     assignVillagerMoods(villagerList);
     // Initialize relationships for each villager
+    const currentDruid = isDayTurn ? dayDruid : nightDruid; 
     villagerList.forEach(v => {
-        villagerRelationships[v.name] = { "dayDruid": 0, "nightDruid": 0 };
-    });
-
+        if (!villagerRelationships[v.name]) {
+            villagerRelationships[v.name] = {}; // Initialize a new object if it doesn't exist
+        }
+        villagerRelationships[v.name][currentDruid.id] = 0;
+    }
+    );
     return villagerList;
 }
 
@@ -824,15 +828,15 @@ function talkToVillager(villagerName) {
         let currentDruid = isDayTurn ? dayDruid : nightDruid;
         let druidSpecificTalkedToday = currentDruid.hasTalkedToday || {};
 
-        if (!druidSpecificTalkedToday[villagerName]) {
+        if (!currentDruid.hasTalkedToday[villagerName]) {
             let pointsToAdd = 1;
             if (activeRitualEffects.lunarBondingActive) {
                 pointsToAdd *= 2;
             }
 
-            villagerRelationships[villagerName][currentDruidKey] += pointsToAdd;
+            villagerRelationships[villagerName][currentDruid.id] += pointsToAdd;
 
-            let points = villagerRelationships[villagerName][currentDruidKey];
+            let points = villagerRelationships[villagerName][currentDruid.id];
             let status = getRelationshipStatus(points);
 
             // Determine the type of response
@@ -872,7 +876,7 @@ function talkToVillager(villagerName) {
              `;
 
             druidSpecificTalkedToday[villagerName] = true;
-            hasTalkedToday[currentDruidKey] = druidSpecificTalkedToday;
+            hasTalkedToday[currentDruid.id] = currentDruid.hasTalkedToday;
 
             currentDruid.actionPoints -= 1;
             updateTurnDisplay();
